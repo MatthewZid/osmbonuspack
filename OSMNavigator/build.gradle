@@ -37,4 +37,5 @@ dependencies {
     implementation 'org.mapsforge:mapsforge-map:0.13.0'
     implementation 'org.mapsforge:mapsforge-themes:0.13.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }
