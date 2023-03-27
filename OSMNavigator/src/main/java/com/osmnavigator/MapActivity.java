@@ -203,6 +203,17 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 		View v = inflater.inflate(R.layout.main, null);
 		setContentView(v);
 
+		//get found lat and lon
+		double foundLat, foundLon;
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			foundLat = Double.parseDouble(extras.getString("lat"));
+			foundLon = Double.parseDouble(extras.getString("lon"));
+		} else {
+			foundLat = 0.0;
+			foundLon = 0.0;
+		}
+
 		SharedPreferences prefs = getSharedPreferences("OSMNAVIGATOR", MODE_PRIVATE);
 
 		MAPBOXSATELLITELABELLED = new MapBoxTileSource("MapBoxSatelliteLabelled", 1, 19, 256, ".png");
@@ -395,21 +406,21 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 		}
 
 		//KML handling:
-		mKmlOverlay = null;
-		if (savedInstanceState != null){
-			//STATIC - mKmlDocument = savedInstanceState.getParcelable("kml");
-			updateUIWithKml();
-		} else { //first launch: 
-			mKmlDocument = new KmlDocument();
-			mKmlStack = new Stack<KmlFeature>();
-			mKmlClipboard = new KmlFolder();
-			//check if intent has been passed with a kml URI to load (url or file)
-			Intent onCreateIntent = getIntent();
-			if (onCreateIntent.getAction().equals(Intent.ACTION_VIEW)){
-				String uri = onCreateIntent.getDataString();
-				openFile(uri, true, false);
-			}
-		}
+//		mKmlOverlay = null;
+//		if (savedInstanceState != null){
+//			//STATIC - mKmlDocument = savedInstanceState.getParcelable("kml");
+//			updateUIWithKml();
+//		} else { //first launch:
+//			mKmlDocument = new KmlDocument();
+//			mKmlStack = new Stack<KmlFeature>();
+//			mKmlClipboard = new KmlFolder();
+//			//check if intent has been passed with a kml URI to load (url or file)
+//			Intent onCreateIntent = getIntent();
+//			if (onCreateIntent.getAction().equals(Intent.ACTION_VIEW)){
+//				String uri = onCreateIntent.getDataString();
+//				openFile(uri, true, false);
+//			}
+//		}
 
 		//Sharing
 		mFriendsManager = new FriendsManager(this, map);
@@ -424,6 +435,11 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 				openOptionsMenu();
 			}
 		});
+
+		destinationPoint = new GeoPoint(foundLat, foundLon);
+		markerDestination = updateItineraryMarker(markerDestination, destinationPoint, DEST_INDEX,
+				R.string.destination, R.drawable.marker_destination, -1, null);
+		getRoadAsync();
 	}
 
 	final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
