@@ -436,6 +436,7 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 			}
 		});
 
+		//navigate to found parking location
 		destinationPoint = new GeoPoint(foundLat, foundLon);
 		markerDestination = updateItineraryMarker(markerDestination, destinationPoint, DEST_INDEX,
 				R.string.destination, R.drawable.marker_destination, -1, null);
