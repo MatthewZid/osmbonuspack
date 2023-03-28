@@ -1,2 +1,1 @@
-include ':OSMBonusPack', ':OSMBonusPackTuto', ':OSMNavigator'
-include ':NooTous'
+include ':OSMBonusPack', ':OSMNavigator'
