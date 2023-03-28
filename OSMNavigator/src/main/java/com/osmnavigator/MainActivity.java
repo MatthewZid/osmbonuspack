@@ -98,6 +98,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         Intent intent = new Intent(this, MapActivity.class);
         intent.putExtra("lat", foundLat);
         intent.putExtra("lon", foundLon);
+        intent.putExtra("streetId", foundStreetId);
         startActivity(intent);
     }
 
