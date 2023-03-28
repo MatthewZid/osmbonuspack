@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -325,6 +326,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
         choice = parent.getItemAtPosition(pos).toString();
+
+        //hide keyboard
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        View currentView = getCurrentFocus();
+        if(currentView == null)
+            currentView = new View(this);
+        imm.hideSoftInputFromWindow(currentView.getWindowToken(), 0);
+
         Toast.makeText(getApplicationContext(), choice, Toast.LENGTH_LONG).show();
     }
 
