@@ -191,6 +191,9 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 	static String flickrApiKey;
 	static String geonamesAccount;
 	static String mapzenApiKey;
+	private boolean hasLocation = true;
+	double foundLat, foundLon;
+	String streetId;
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -204,14 +207,16 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 		setContentView(v);
 
 		//get found lat and lon
-		double foundLat, foundLon;
+//		double foundLat, foundLon;
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			foundLat = Double.parseDouble(extras.getString("lat"));
 			foundLon = Double.parseDouble(extras.getString("lon"));
+			streetId = extras.getString("streetId");
 		} else {
 			foundLat = 0.0;
 			foundLon = 0.0;
+			streetId = "0";
 		}
 
 		SharedPreferences prefs = getSharedPreferences("OSMNAVIGATOR", MODE_PRIVATE);
@@ -435,12 +440,6 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 				openOptionsMenu();
 			}
 		});
-
-		//navigate to found parking location
-		destinationPoint = new GeoPoint(foundLat, foundLon);
-		markerDestination = updateItineraryMarker(markerDestination, destinationPoint, DEST_INDEX,
-				R.string.destination, R.drawable.marker_destination, -1, null);
-		getRoadAsync();
 	}
 
 	final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
@@ -1755,6 +1754,23 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 				myLocationOverlay.setBearing(mAzimuthAngleSpeed);
 			}
 		}
+
+		//navigate to found parking location
+		if(myLocationOverlay.isEnabled())
+			if(myLocationOverlay.getLocation() != null)
+				if(hasLocation)
+					if(mItineraryMarkers != null) {
+						startPoint = new GeoPoint(myLocationOverlay.getLocation().getLatitude(), myLocationOverlay.getLocation().getLongitude());
+						markerStart = updateItineraryMarker(markerStart, startPoint, START_INDEX,
+								R.string.departure, R.drawable.marker_departure, -1, null);
+
+						destinationPoint = new GeoPoint(foundLat, foundLon);
+						markerDestination = updateItineraryMarker(markerDestination, destinationPoint, DEST_INDEX,
+								R.string.destination, R.drawable.marker_destination, -1, null);
+						markerDestination.setTitle("Parking spot: "+streetId);
+						getRoadAsync();
+						hasLocation = false;
+					}
 
 		if (mTrackingMode){
 			//keep the map view centered on current location:
