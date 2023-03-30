@@ -62,7 +62,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         resultText = findViewById(R.id.resultMsg);
         resultData = new ArrayList<>();
         acdropdown.setThreshold(1);
-        findSpot = findViewById(R.id.findButton);
         navBtn = findViewById(R.id.mapButton);
         ArrayAdapter<CharSequence> acAdapter = ArrayAdapter.createFromResource(this, R.array.ncsr_locations, android.R.layout.select_dialog_item);
         acdropdown.setAdapter(acAdapter);
@@ -80,17 +79,22 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             public void afterTextChanged(Editable editable) {
                 if(acdropdown.getText().toString().equals("")) {
                     choice = "";
-                    findSpot.setEnabled(false);
                 }
                 else {
                     choice = acdropdown.getText().toString();
-                    findSpot.setEnabled(true);
                 }
             }
         });
 
-        findSpot.setOnClickListener(view -> findAvailableSpot());
+//        findSpot.setOnClickListener(view -> findAvailableSpot());
         navBtn.setOnClickListener(view -> openMapActivity());
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+                if(!choice.equals(""))
+                    findAvailableSpot();
+            }
+        });
     }
 
     public void openMapActivity()
@@ -121,8 +125,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                     @Override
                     protected void onPreExecute(){
                         super.onPreExecute();
-                        resultText.setVisibility(View.INVISIBLE);
-                        findSpot.setText(getString(R.string.loadingBtn));
+                        resultText.setVisibility(View.VISIBLE);
+                        radioGroup.setEnabled(false);
+//                        findSpot.setText(getString(R.string.loadingBtn));
+                        resultText.setText(getString(R.string.loadingBtn));
                     }
                     @Override
                     protected String doInBackground(String... params) {
@@ -185,7 +191,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                     @Override
                     protected void onPostExecute(String s){
                         super.onPostExecute(s);
-                        findSpot.setText(getString(R.string.btnFunc));
                         for(String str : s.split("\n")){
                             resultData.add(str.split(",")[3]);
                         }
@@ -284,6 +289,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                         if(foundSpot.equals("")){
                             resultText.setBackgroundColor(Color.parseColor("#ffb976"));
                             resultText.setText(getString(R.string.noVacancyMsg));
+                            navBtn.setEnabled(false);
                         }
                         else{
                             resultText.setBackgroundColor(Color.parseColor("#abf5a7"));
@@ -309,9 +315,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                                     foundLon = Objects.requireNonNull(csvHashmap.get(foundSpot)).get(1);
                                 }
                             }
+
+                            navBtn.setEnabled(true);
                         }
-                        resultText.setVisibility(View.VISIBLE);
-                        navBtn.setEnabled(true);
+                        radioGroup.setEnabled(true);
                     }
                 }.execute("http://83.212.75.16:8086/api/v2/query?orgID=4180de514f7a8ab2");
             }
@@ -334,6 +341,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         if(currentView == null)
             currentView = new View(this);
         imm.hideSoftInputFromWindow(currentView.getWindowToken(), 0);
+
+        findAvailableSpot();
 
         Toast.makeText(getApplicationContext(), choice, Toast.LENGTH_LONG).show();
     }
