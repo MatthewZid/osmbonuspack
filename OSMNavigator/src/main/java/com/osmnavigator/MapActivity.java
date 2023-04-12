@@ -268,9 +268,11 @@ public class MapActivity extends Activity implements MapEventsReceiver, Location
 		//mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 
 		//map prefs:
-		mapController.setZoom((double)prefs.getFloat("MAP_ZOOM_LEVEL_F", 5));
-		mapController.setCenter(new GeoPoint((double) prefs.getFloat("MAP_CENTER_LAT", 48.5f),
-				(double)prefs.getFloat("MAP_CENTER_LON", 2.5f)));
+//		mapController.setZoom((double)prefs.getFloat("MAP_ZOOM_LEVEL_F", 5));
+		mapController.setZoom(16.2);
+//		mapController.setCenter(new GeoPoint((double) prefs.getFloat("MAP_CENTER_LAT", 48.5f),
+//				(double)prefs.getFloat("MAP_CENTER_LON", 2.5f)));
+		mapController.setCenter(new GeoPoint(37.997865, 23.819245));
 
 		myLocationOverlay = new DirectedLocationOverlay(this);
 		map.getOverlays().add(myLocationOverlay);
