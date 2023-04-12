@@ -19,8 +19,9 @@
 	<string-array name="ncsr_locations">
 		<item>Lefkippos</item>
 		<item>Technology Park</item>
-		<item>SCio</item>
-		<item>Fuelics</item>
+<!--		<item>SCio</item>-->
+<!--		<item>Fuelics</item>-->
+		<item>Lefkippos Conference Room</item>
 		<item>Library</item>
 		<item>Roboskel</item>
 		<item>Tesla</item>

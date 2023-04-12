@@ -270,8 +270,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                                 order4.remove("Library2");
                             }
 
-                            if(choice.equals("Lefkippos") || choice.equals("Technology Park") || choice.equals("SCio")
-                                    || choice.equals("Fuelics")){
+                            if(choice.equals("Lefkippos") || choice.equals("Technology Park")
+                                    || choice.equals("Lefkippos Conference Room")){
 
                                 foundSpot = getParkingSpot(order1, jsonParser, constraintData);
                             }
