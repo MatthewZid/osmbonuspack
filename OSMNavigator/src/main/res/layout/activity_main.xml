@@ -35,7 +35,7 @@
 
     <AutoCompleteTextView
         android:id="@+id/acDropdown"
-        android:layout_width="wrap_content"
+        android:layout_width="125dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="508dp"
         android:dropDownWidth="200dp"
