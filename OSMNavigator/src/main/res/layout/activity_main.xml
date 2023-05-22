@@ -123,7 +123,6 @@
             android:id="@+id/regular"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:checked="true"
             android:text="@string/rb0" />
 
         <RadioButton
