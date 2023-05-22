@@ -16,6 +16,8 @@
 	<string name="loadingBtn">Searching…</string>
 	<string name="noVacancyMsg">No free parking spots!</string>
 	<string name="motabilitySpotDesc">Lefkippos motability vehicle spot</string>
+	<string name="curl1">Per-minute Refresh</string>
+	<string name="curl2">Something Else</string>
 	<string-array name="ncsr_locations">
 		<item>Lefkippos</item>
 		<item>Technology Park</item>
