@@ -11,6 +11,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -55,6 +58,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private String foundLon;
     private String foundStreetId;
     private AutoCompleteTextView acdropdown;
+    private String data = "from(bucket: \"gigacampus2-parking\") " +
+            "|> range(start: -5m) " +
+            "|> filter(fn: (r) => r._measurement == \"parking_status\" and r._field == \"occupied\" and r._value == 0) " +
+            "|> group( columns: [\"id\"] ) |> sort( columns: [\"_time\"], desc: false ) " +
+            "|> last() |> keep( columns: [\"id\"] ) |> group()";
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -108,6 +116,32 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.curl1:
+                data = "from(bucket: \"gigacampus2-parking\") " +
+                        "|> range(start: -5m) " +
+                        "|> filter(fn: (r) => r._measurement == \"parking_status\" and r._field == \"occupied\" and r._value == 0) " +
+                        "|> group( columns: [\"id\"] ) |> sort( columns: [\"_time\"], desc: false ) " +
+                        "|> last() |> keep( columns: [\"id\"] ) |> group()";
+                return true;
+            case R.id.curl2:
+                Toast.makeText(getApplicationContext(), "Something Else", Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
@@ -157,11 +191,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                     protected String doInBackground(String... params) {
                         HttpURLConnection urlConnection = null;
 
-                        String data = "from(bucket: \"gigacampus2-parking\") " +
-                                "|> range(start: -5m) " +
-                                "|> filter(fn: (r) => r._measurement == \"parking_status\" and r._field == \"occupied\" and r._value == 0) " +
-                                "|> group( columns: [\"id\"] ) |> sort( columns: [\"_time\"], desc: false ) " +
-                                "|> last() |> keep( columns: [\"id\"] ) |> group()";
+//                        String data = "from(bucket: \"gigacampus2-parking\") " +
+//                                "|> range(start: -5m) " +
+//                                "|> filter(fn: (r) => r._measurement == \"parking_status\" and r._field == \"occupied\" and r._value == 0) " +
+//                                "|> group( columns: [\"id\"] ) |> sort( columns: [\"_time\"], desc: false ) " +
+//                                "|> last() |> keep( columns: [\"id\"] ) |> group()";
 
                         try {
                             URL url = new URL(params[0]);
