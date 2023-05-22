@@ -2,7 +2,9 @@ package com.osmnavigator;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -19,6 +21,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,6 +54,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private String foundLat;
     private String foundLon;
     private String foundStreetId;
+    private AutoCompleteTextView acdropdown;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -57,7 +62,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AutoCompleteTextView acdropdown = findViewById(R.id.acDropdown);
+        SharedPreferences prefs = getSharedPreferences("USERPREFS", MODE_PRIVATE);
+
+        acdropdown = findViewById(R.id.acDropdown);
         radioGroup = findViewById(R.id.constrGroup);
         resultText = findViewById(R.id.resultMsg);
         resultData = new ArrayList<>();
@@ -91,10 +98,26 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                if(!choice.equals(""))
+                if(!choice.equals("") && checkedId != -1)
                     findAvailableSpot();
             }
         });
+
+        acdropdown.setText(prefs.getString("destination", ""));
+        radioGroup.check(prefs.getInt("constraint", R.id.regular));
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        SharedPreferences prefs = getSharedPreferences("USERPREFS", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("destination", acdropdown.getText().toString());
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        int idx = findViewById(selectedId).getId();
+        editor.putInt("constraint", idx);
+        editor.apply();
     }
 
     public void openMapActivity()
