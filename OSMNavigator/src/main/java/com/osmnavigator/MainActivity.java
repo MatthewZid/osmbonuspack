@@ -64,6 +64,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             "|> group( columns: [\"id\"] ) |> sort( columns: [\"_time\"], desc: false ) " +
             "|> last() |> keep( columns: [\"id\"] ) |> group()";
 
+    private String auth_token = "Token OpZihwsUM-5IrinGcpH0CDD2cXP9tbFWikdP6kgZlRLXjySElZwLqn5mLfHfmoR6hVtKCF-XmmeMOB20OIe8-w==";
+    private String post_url = "http://83.212.75.16:8086/api/v2/query?orgID=4180de514f7a8ab2";
+    private MenuItem curl1_item;
+    private MenuItem curl2_item;
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +124,12 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        curl1_item = menu.findItem(R.id.curl1);
+        curl2_item = menu.findItem(R.id.curl2);
+        curl1_item.setCheckable(true);
+        curl2_item.setCheckable(true);
+        curl1_item.setChecked(true);
+        curl2_item.setChecked(false);
         return true;
     }
 
@@ -127,6 +138,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.curl1:
+                item.setChecked(!item.isChecked());
+                curl2_item.setChecked(!curl2_item.isChecked());
+                auth_token = "Token OpZihwsUM-5IrinGcpH0CDD2cXP9tbFWikdP6kgZlRLXjySElZwLqn5mLfHfmoR6hVtKCF-XmmeMOB20OIe8-w==";
+                post_url = "http://83.212.75.16:8086/api/v2/query?orgID=4180de514f7a8ab2";
                 data = "from(bucket: \"gigacampus2-parking\") " +
                         "|> range(start: -5m) " +
                         "|> filter(fn: (r) => r._measurement == \"parking_status\" and r._field == \"occupied\" and r._value == 0) " +
@@ -134,7 +149,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                         "|> last() |> keep( columns: [\"id\"] ) |> group()";
                 return true;
             case R.id.curl2:
-                Toast.makeText(getApplicationContext(), "Something Else", Toast.LENGTH_LONG).show();
+                item.setChecked(!item.isChecked());
+                curl1_item.setChecked(!curl1_item.isChecked());
+                auth_token = "Token KK3TM-TbFxn8fK8ZKyi-1zrBXZ5Yvj_zFhQIVFxOCnIbSRJ1tBzcDtT5pg0rN0BVFe9hT-iQ5foXN4cKH-lsPg==";
+                post_url = "http://83.212.75.16:8086/api/v2/query?orgID=16c94f60fd364b2d";
+                data = "from(bucket: \"parking\") " +
+                        "|> range(start: -2h) " +
+                        "|> filter(fn: (r) => r._measurement == \"parking_status\" and r._field == \"occupied\" and r._value == 0) " +
+                        "|> group( columns: [\"id\"] ) |> sort( columns: [\"_time\"], desc: false ) " +
+                        "|> last() |> keep( columns: [\"id\"] ) |> group()";
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -201,7 +224,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                             URL url = new URL(params[0]);
                             urlConnection = (HttpURLConnection) url.openConnection();
                             urlConnection.setRequestMethod("POST");
-                            urlConnection.setRequestProperty("Authorization", "Token OpZihwsUM-5IrinGcpH0CDD2cXP9tbFWikdP6kgZlRLXjySElZwLqn5mLfHfmoR6hVtKCF-XmmeMOB20OIe8-w==");
+                            urlConnection.setRequestProperty("Authorization", auth_token);
                             urlConnection.setRequestProperty("Accept", "application/csv");
                             urlConnection.setRequestProperty("Content-Type", "application/vnd.flux");
                             urlConnection.setDoOutput(true);
@@ -377,7 +400,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                         }
                         radioGroup.setEnabled(true);
                     }
-                }.execute("http://83.212.75.16:8086/api/v2/query?orgID=4180de514f7a8ab2");
+                }.execute(post_url);
             }
         }
         else{
